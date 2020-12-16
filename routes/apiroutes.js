@@ -17,7 +17,9 @@ router.post('/new', async (req, res) => {
         lastname: req.body.lastname,
         address: req.body.address,
         garage: req.body.garage,
-        notes: req.body.notes
+        notes: req.body.notes,
+        lat: req.body.lat,
+        long: req.body.long
     });
 
     res.send(data)

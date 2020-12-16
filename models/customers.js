@@ -13,7 +13,14 @@ module.exports = (sequelize, DataTypes) => {
             },
             notes: {
                 type: DataTypes.STRING
+            },
+            lat: {
+                type: DataTypes.DECIMAL (16,14)
+            },
+            long: {
+                type: DataTypes.DECIMAL(17,14)
             }
+            
         });
 
 
