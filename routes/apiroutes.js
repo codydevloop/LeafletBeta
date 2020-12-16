@@ -19,12 +19,24 @@ router.post('/new', async (req, res) => {
         garage: req.body.garage,
         notes: req.body.notes,
         lat: req.body.lat,
-        long: req.body.long
+        long: req.body.long,
+        completed: req.body.completed
     });
 
     res.send(data)
+});
 
 
+router.put('/completed/:id', async (req, res) => {
+
+    const data = await db.Customer.update(
+        {completed: req.body.completed},
+        {where:
+            {id: req.params.id}
+        }
+    )   
+    
+    res.send(data);
 });
 
 

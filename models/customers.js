@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
             },
             long: {
                 type: DataTypes.DECIMAL(17,14)
+            },
+            completed: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false
             }
             
         });
