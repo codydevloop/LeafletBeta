@@ -56,7 +56,7 @@ const popupDiv = (garage, address, lastname, db_id, completed) => {
     //
     if(completed){
         completedButton =$("<button></button>").text("UNDO COMPLETED TASK").css("background-color","red").attr("id", db_id).click(function(){
-            // console.log(db_id);
+            
             $.ajax({
                 method: "PUT",
                 url: "/api/completed/" + db_id,
@@ -68,7 +68,7 @@ const popupDiv = (garage, address, lastname, db_id, completed) => {
         });
     }else{
         completedButton =$("<button></button>").text("TASK COMPLETED").css("background-color","aqua").attr("id", db_id).click(function(){
-            // console.log(db_id)
+           
             $.ajax({
                 method: "PUT",
                 url: "/api/completed/" + db_id,
