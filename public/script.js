@@ -27,16 +27,17 @@ $(document).ready(function () {
         //         color: "green"   
         //       }).addTo(mymap).bindPopup(popupDiv(data[i].garage, data[i].address,data[i].lastname,data[i].id, completed));
         // }
-        
+
         // let marker = L.circle([33.26042994983704,-111.69744014739990],{
         //     color: "green"
         // }).addTo(mymap)
-        console.log(staticArray);
+
+        // console.log(staticArray);
         for (i = 0; i < staticArray.length; i++) {
 
 
             const lat = staticArray[i].lat;
-            console.log(lat);
+            // console.log(lat);
             const long = staticArray[i].long;
             const completed = staticArray[i].completed;
             const lastname = staticArray[i].lastname;
@@ -46,22 +47,22 @@ $(document).ready(function () {
                     color: "grey"
                 })
                 mymap.addLayer(marker)
-                marker.bindPopup(popupDiv(staticArray[i].garage, staticArray[i].address, staticArray[i].lastname, staticArray[i].id, completed));
+                marker.bindPopup(popupDiv(staticArray[i].garage, staticArray[i].address, staticArray[i].lastname, staticArray[i].id, completed, mymap));
             } else {
                 marker = new L.circle([lat, long], {
                     color: "green"
                 })
                 mymap.addLayer(marker)
-                marker.bindPopup(popupDiv(staticArray[i].garage, staticArray[i].address, staticArray[i].lastname, staticArray[i].id, completed));
+                marker.bindPopup(popupDiv(staticArray[i].garage, staticArray[i].address, staticArray[i].lastname, staticArray[i].id, completed, mymap));
             }
         }
     } //end of drawMap
 
 
-   
+
     //RETRIEVE DATA FROM DB
     const getDataFromDB = () => {
-        $.get("/api/all", function (data){
+        $.get("/api/all", function (data) {
             staticArray = data;
             drawMap();
         })
@@ -73,13 +74,13 @@ $(document).ready(function () {
         //         // console.log(staticArray);
         //         drawMap();
         //     })
-        };  // end fetch
-       
+    };  // end fetch
+
 
     //CUSTOM POPUP TO INCLUDE EACH INDIVIDUAL CUSTOMER RECORD FROM THE DB
     //const testDiv = document.querySelector("#testdiv");
 
-    const popupDiv = (garage, address, lastname, db_id, completed) => {
+    const popupDiv = (garage, address, lastname, db_id, completed, mymap) => {
         const newDiv = document.createElement("div");
         // newDiv.setAttribute("id", id);
         let garageEl = $("<p></p").text("garage: " + garage);
@@ -97,7 +98,13 @@ $(document).ready(function () {
                         completed: 0
                     }
                 });
-                // removeTheCircle(lastname);
+                //##THERE HAS TO BE A BETTER WAY TO DO THIS
+                //## CONSIDER JUST UPDATING THE STATIC ARRAY (AS IS WORKS NOT, THERE IS NO NEED FOR IT)
+                //## ALSO NEED TO FIGURE OUT HOW TO FIND AND PASS THE CURRENT CORDS AND ZOOM LEVEL
+                //## SO WHEN THE MAP RELOADS THOSE SETTINGS STICK
+                setTimeout(function(){mymap.remove(),getDataFromDB()}, 3000);
+  
+
             });
         } else {
             completedButtonEl = $("<button></button>").text("TASK COMPLETED").css("background-color", "aqua").attr("id", db_id).click(function () {
@@ -109,7 +116,13 @@ $(document).ready(function () {
                         completed: 1
                     }
                 });
-                // removeTheCircle(lastname);
+    
+                //##THERE HAS TO BE A BETTER WAY TO DO THIS
+                //## CONSIDER JUST UPDATING THE STATIC ARRAY (AS IS WORKS NOT, THERE IS NO NEED FOR IT)
+                //## ALSO NEED TO FIGURE OUT HOW TO FIND AND PASS THE CURRENT CORDS AND ZOOM LEVEL
+                //## SO WHEN THE MAP RELOADS THOSE SETTINGS STICK
+                setTimeout(function(){mymap.remove(),getDataFromDB()}, 1000);
+
             });
         } //end of else
 
@@ -119,7 +132,9 @@ $(document).ready(function () {
     }  // end of popupDiv
 
     getDataFromDB();
-    
+
+
+
 
 });  // end of document ready
 
@@ -127,8 +142,10 @@ $(document).ready(function () {
 // REDRAW MARKER AND POPUP AFTER CLICKING BUTTON
 // issue #1 - need to pass lat and long around
 
+// const redrawMarker = (garage, address, lastname, id, completed, lat, long,mymap) => {
 
-// const redrawMarker = (garage, address, lastname, id, completed) => {
+
+
 //     if (completed) {
 //         const marker = L.circle([lat, long], {
 //             color: "grey"
@@ -139,6 +156,7 @@ $(document).ready(function () {
 //         }).addTo(mymap).bindPopup(popupDiv(garage, address, lastname, id, completed));
 //     }
 // }
+
 
 
 // const removeTheCircle = (lastname) => {
