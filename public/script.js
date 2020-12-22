@@ -87,6 +87,8 @@ $(document).ready(function () {
         });
         console.log(rebuiltArrayOfObjects);
 
+        //***LOAD DATA INTO 'MASTER' TABLE OF THE DB */
+
     }  // end of parseJSON
 
 
@@ -94,9 +96,15 @@ $(document).ready(function () {
 
     //LEAFLET DRAW MAP
     let staticArray = [];
-    const drawMap = () => {
-
-        const mymap = L.map('mapid').setView([33.25652510159925, -111.69469356536865], 14);
+    const drawMap = (zoom, center) => {
+        if(!zoom){
+            zoom = 14;
+            center = {
+                lat : 33.25652510159925,
+                lng : -111.69469356536865
+            }
+        }
+        const mymap = L.map('mapid').setView([center.lat, center.lng], zoom);
 
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
             maxZoom: 18,
@@ -188,9 +196,10 @@ $(document).ready(function () {
                 //## SO WHEN THE MAP RELOADS THOSE SETTINGS STICK
                 let zoom = mymap.getZoom();
                 let center = mymap.getCenter();
+                completed = false;
                 //console.log(center.lat, center.lng);
-                
-                setTimeout(function () { mymap.remove(), getDataFromDB() }, 3000);
+                updateStaticArray(zoom, center, db_id, completed, mymap);
+                //setTimeout(function () { mymap.remove(), getDataFromDB() }, 3000);
 
             });
         } else {
@@ -210,8 +219,10 @@ $(document).ready(function () {
                 //## SO WHEN THE MAP RELOADS THOSE SETTINGS STICK
                 let zoom = mymap.getZoom();
                 let center = mymap.getCenter();
+                completed = true;
                 //console.log(center.lat, center.lng);
-                setTimeout(function () { mymap.remove(), getDataFromDB() }, 1000);
+                updateStaticArray(zoom, center, db_id, completed, mymap);
+                //setTimeout(function () { mymap.remove(), getDataFromDB() }, 1000);
 
             });
         } //end of else
@@ -222,13 +233,22 @@ $(document).ready(function () {
     }  // end of popupDiv
 
 
-    const updateStaticArray = () => {
-        // recieve an identifier of which element needs to be changed and make the change
-        // recieve lat/long and zoom levels of map position when popupDiv is clicked and pass them to drawMap
-        //remove map and redraw
+    const updateStaticArray = (zoom, center, db_id, completed, mymap) => {       
+
+        for (i=0; i < staticArray.length; i++){
+            if(staticArray[i].id == db_id){
+                console.log()
+                staticArray[i].completed = completed;
+            }
+        };
+
+        // setTimeout(function () { mymap.remove(), drawMap(zoom, center) }, 1000);
+        mymap.remove();
+        drawMap(zoom, center);
     }
 
-    getDataFromDB();
+    //THIS ONLY RUNS WHEN LOADING THE APP THE FIRST TIME - ALL UPDATES ARE FROM staticArray
+    // getDataFromDB();
 
 
 
