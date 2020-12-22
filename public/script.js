@@ -1,7 +1,98 @@
 $(document).ready(function () {
+    //-----------------------------CODE FOR EXCEL UPLOAD AND DATA MANIPULATION---------------------------------------
+
+    let selectedFile;
+
+    document.getElementById('fileUpload')
+        .addEventListener('change', (event) => {
+            selectedFile = event.target.files[0];
+
+        });
+
+    document.getElementById('uploadExcel')
+        .addEventListener('click', (event) => {
+            event.preventDefault();
+
+            let month = document.getElementById("nameofmonth").value;
+            console.log(month);
+
+            if (month === "") {
+                document.getElementById("nameofmonth").placeholder = " !! ERROR - PLEASE ENTER A MONTH";
+
+            } else if (selectedFile) {
+
+                let fileReader = new FileReader();
+                fileReader.onload = (event) => {
+                    let data = event.target.result;
+
+                    let workbook = XLSX.read(data, {
+                        type: "binary"
+                    });
+
+                    workbook.SheetNames.forEach(sheet => {
+                        let rowObject = XLSX.utils.sheet_to_row_object_array(
+                            workbook.Sheets[sheet]
+                        );
+                        let jsonObject = JSON.stringify(rowObject);
+                        //display in body of webpage
+                        // document.getElementById("jsonData").innerHTML = jsonObject;
+                        // console.log(jsonObject);
+
+                        //**CALL TO PARSE OUT DATA */
+                        parseJSON(rowObject)
+
+                    });
+                };
+                fileReader.readAsBinaryString(selectedFile);
+
+
+
+                //create an input box to name this file - preferably a month
+                // assign the json object that name
+
+                //parse the JSON object and seperate out the "name" , "address", and "garage code"
+
+                //get lat/long for each address
+
+                //create a new table in the DB with the month as the name and then input all the information
+
+                //reload the page with the new information as an option to choose.
+            }
+        });   // end uploadExcel event
+
+
+
+    //EACH OBJEC CONTAINS A STRING WITH THE CODE, ADDRESS, AND LASTNAME  -  NEED TO SEPARTE THESE FIELDS
+
+    const parseJSON = (allcustomers) => {
+
+        //***SPLIT THE STRINGS BY THE HYPHEN "-"
+        let customerSplitObjects = [];
+
+        allcustomers.forEach((element) => {
+
+            //split each customer element
+            splitStringArray = element.Customer.split("-");
+
+            //build new array with split items 
+            customerSplitObjects.push([splitStringArray, element.Lat, element.Long]);
+        });
+
+        //***REBUILD ARRAY OF OBJECTS, TRIM SPACES AND ASSING KEY/VALUE PAIRS */
+        let rebuiltArrayOfObjects = [];
+
+        customerSplitObjects.forEach((element) => {
+            singleRebuiltObject = { "lastname": element[0][0].trim(), "address": element[0][1].trim(), "code": element[0][2].trim(), "lat": element[1], "long": element[2] };
+            rebuiltArrayOfObjects.push(singleRebuiltObject);
+        });
+        console.log(rebuiltArrayOfObjects);
+
+    }  // end of parseJSON
+
+
+    // --------------------------------CODE FOR DRAWING MAP------------------------------
 
     //LEAFLET DRAW MAP
-    let useDBdata = 1;   //WHEN CALLING drawMap, DETERMINE IF WE SHOULD USE QUERY THE DB FOR DATA OR USE STATIC DATA
     let staticArray = [];
     const drawMap = () => {
 
@@ -37,7 +128,6 @@ $(document).ready(function () {
 
 
             const lat = staticArray[i].lat;
-            // console.log(lat);
             const long = staticArray[i].long;
             const completed = staticArray[i].completed;
             const lastname = staticArray[i].lastname;
@@ -66,14 +156,6 @@ $(document).ready(function () {
             staticArray = data;
             drawMap();
         })
-        // fetch('/api/all')
-        //     .then(response => response.json())
-        //     .then(data => {
-
-        //         staticArray = data;
-        //         // console.log(staticArray);
-        //         drawMap();
-        //     })
     };  // end fetch
 
 
@@ -86,8 +168,10 @@ $(document).ready(function () {
         let garageEl = $("<p></p").text("garage: " + garage);
         let addressEl = $("<p></p>").text("address: " + address);
         let lastnameEl = $("<p></p>").text("lastname: " + lastname);
+        // let zoom = mymap.getZoom();
+        // console.log(zoom);
 
-        //
+
         if (completed) {
             completedButtonEl = $("<button></button>").text("UNDO COMPLETED TASK").css("background-color", "red").attr("id", db_id).click(function () {
 
@@ -102,8 +186,11 @@ $(document).ready(function () {
                 //## CONSIDER JUST UPDATING THE STATIC ARRAY (AS IS WORKS NOT, THERE IS NO NEED FOR IT)
                 //## ALSO NEED TO FIGURE OUT HOW TO FIND AND PASS THE CURRENT CORDS AND ZOOM LEVEL
                 //## SO WHEN THE MAP RELOADS THOSE SETTINGS STICK
-                setTimeout(function(){mymap.remove(),getDataFromDB()}, 3000);
-  
+                let zoom = mymap.getZoom();
+                let center = mymap.getCenter();
+                //console.log(center.lat, center.lng);
+                
+                setTimeout(function () { mymap.remove(), getDataFromDB() }, 3000);
 
             });
         } else {
@@ -116,12 +203,15 @@ $(document).ready(function () {
                         completed: 1
                     }
                 });
-    
+
                 //##THERE HAS TO BE A BETTER WAY TO DO THIS
                 //## CONSIDER JUST UPDATING THE STATIC ARRAY (AS IS WORKS NOT, THERE IS NO NEED FOR IT)
                 //## ALSO NEED TO FIGURE OUT HOW TO FIND AND PASS THE CURRENT CORDS AND ZOOM LEVEL
                 //## SO WHEN THE MAP RELOADS THOSE SETTINGS STICK
-                setTimeout(function(){mymap.remove(),getDataFromDB()}, 1000);
+                let zoom = mymap.getZoom();
+                let center = mymap.getCenter();
+                //console.log(center.lat, center.lng);
+                setTimeout(function () { mymap.remove(), getDataFromDB() }, 1000);
 
             });
         } //end of else
@@ -131,7 +221,14 @@ $(document).ready(function () {
         return newDiv;
     }  // end of popupDiv
 
-    // getDataFromDB();
+
+    const updateStaticArray = () => {
+        // recieve an identifier of which element needs to be changed and make the change
+        // recieve lat/long and zoom levels of map position when popupDiv is clicked and pass them to drawMap
+        //remove map and redraw
+    }
+
+    getDataFromDB();
 
 
 
