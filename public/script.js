@@ -131,7 +131,7 @@ $(document).ready(function () {
         return newDiv;
     }  // end of popupDiv
 
-    getDataFromDB();
+    // getDataFromDB();
 
 
 
