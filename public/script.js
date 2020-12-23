@@ -89,6 +89,22 @@ $(document).ready(function () {
 
         //***LOAD DATA INTO 'MASTER' TABLE OF THE DB */
 
+        $.ajax({
+            method: "POST",
+            url: "/api/newjanuary",
+            data: {
+                "lastname": "Hoover",
+                "address": "1326 S Martingale Road",
+                "garage": "4521",
+                "notes": "",
+                "lat": "33.25996119783698",
+                "long": "-111.69651746749877",
+                "createdAt": "2020-12-15T12:38:57.000Z",
+                "updatedAt": "2020-12-15T12:38:57.000Z",
+                "completed": "true"
+            }
+        });
+
     }  // end of parseJSON
 
 
@@ -97,11 +113,11 @@ $(document).ready(function () {
     //LEAFLET DRAW MAP
     let staticArray = [];
     const drawMap = (zoom, center) => {
-        if(!zoom){
+        if (!zoom) {
             zoom = 14;
             center = {
-                lat : 33.25652510159925,
-                lng : -111.69469356536865
+                lat: 33.25652510159925,
+                lng: -111.69469356536865
             }
         }
         const mymap = L.map('mapid').setView([center.lat, center.lng], zoom);
@@ -233,10 +249,10 @@ $(document).ready(function () {
     }  // end of popupDiv
 
 
-    const updateStaticArray = (zoom, center, db_id, completed, mymap) => {       
+    const updateStaticArray = (zoom, center, db_id, completed, mymap) => {
 
-        for (i=0; i < staticArray.length; i++){
-            if(staticArray[i].id == db_id){
+        for (i = 0; i < staticArray.length; i++) {
+            if (staticArray[i].id == db_id) {
                 console.log()
                 staticArray[i].completed = completed;
             }
