@@ -6,25 +6,17 @@ $(document).ready(function () {
     document.getElementById('fileUpload')
         .addEventListener('change', (event) => {
             selectedFile = event.target.files[0];
-
         });
 
     document.getElementById('uploadExcel')
         .addEventListener('click', (event) => {
             event.preventDefault();
-
-            let month = document.getElementById("nameofmonth").value;
-            console.log(month);
-
-            if (month === "") {
-                document.getElementById("nameofmonth").placeholder = " !! ERROR - PLEASE ENTER A MONTH";
-
-            } else if (selectedFile) {
+            if (selectedFile) {
 
                 let fileReader = new FileReader();
+
                 fileReader.onload = (event) => {
                     let data = event.target.result;
-
                     let workbook = XLSX.read(data, {
                         type: "binary"
                     });
@@ -40,29 +32,14 @@ $(document).ready(function () {
 
                         //**CALL TO PARSE OUT DATA */
                         parseJSON(rowObject)
-
                     });
                 };
                 fileReader.readAsBinaryString(selectedFile);
-
-
-
-                //create an input box to name this file - preferably a month
-                // assign the json object that name
-
-                //parse the JSON object and seperate out the "name" , "address", and "garage code"
-
-                //get lat/long for each address
-
-                //create a new table in the DB with the month as the name and then input all the information
-
-                //reload the page with the new information as an option to choose.
-            }
+            }     // end if
         });   // end uploadExcel event
 
 
-
-    //EACH OBJEC CONTAINS A STRING WITH THE CODE, ADDRESS, AND LASTNAME  -  NEED TO SEPARTE THESE FIELDS
+    //  EACH OBJECT CONTAINS A STRING WITH THE CODE, ADDRESS, AND LASTNAME  -  NEED TO SEPARaTE AND TRIM THESE FIELDS
 
     const parseJSON = (allcustomers) => {
 
@@ -74,36 +51,40 @@ $(document).ready(function () {
             //split each customer element
             splitStringArray = element.Customer.split("-");
 
-            //build new array with split items 
+            //build new array with split items, add lat and long back in
             customerSplitObjects.push([splitStringArray, element.Lat, element.Long]);
         });
 
-        //***REBUILD ARRAY OF OBJECTS, TRIM SPACES AND ASSING KEY/VALUE PAIRS */
-        let rebuiltArrayOfObjects = [];
+        //***REBUILD ARRAY OF OBJECTS, TRIM SPACES AND ASSIGN KEY/VALUE PAIRS */
+
+        let rebuiltArrayOfObjects = [];  // will hold the final product 
 
         customerSplitObjects.forEach((element) => {
             singleRebuiltObject = { "lastname": element[0][0].trim(), "address": element[0][1].trim(), "code": element[0][2].trim(), "lat": element[1], "long": element[2] };
             rebuiltArrayOfObjects.push(singleRebuiltObject);
         });
-        console.log(rebuiltArrayOfObjects);
 
-        //***LOAD DATA INTO 'MASTER' TABLE OF THE DB */
 
-        $.ajax({
-            method: "POST",
-            url: "/api/newjanuary",
-            data: {
-                "lastname": "Hoover",
-                "address": "1326 S Martingale Road",
-                "garage": "4521",
-                "notes": "",
-                "lat": "33.25996119783698",
-                "long": "-111.69651746749877",
-                "createdAt": "2020-12-15T12:38:57.000Z",
-                "updatedAt": "2020-12-15T12:38:57.000Z",
-                "completed": "true"
-            }
-        });
+        // console.log(rebuiltArrayOfObjects);
+
+        //*********************** LOAD DATA INTO 'January_Master' TABLE OF THE DB **********************************/
+
+        // rebuiltArrayOfObjects.forEach((element)=>{
+        //     let record = {
+        //         "lastname" : element.lastname,
+        //         "address"  : element.address,
+        //         "code" : element.code,
+        //         "lat" : element.lat,
+        //         "long" : element.long
+        //     }
+        //     $.ajax({
+        //         method: "POST",
+        //         url: "/api/newjanuary",
+        //         data: record
+        //     });
+        // })
+
+
 
     }  // end of parseJSON
 
