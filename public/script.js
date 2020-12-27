@@ -1,6 +1,24 @@
 $(document).ready(function () {
-    //-----------------------------CODE FOR EXCEL UPLOAD AND DATA MANIPULATION---------------------------------------
+    
+    
+    $("#master").click(function(){
+        $("#excelcontainer").hide();
+        path = "/api/alljanuary";
+        getDataFromDB(path);
+    })
 
+    $("#testdbdata").click(function(){
+        path = "/api/all";
+        getDataFromDB(path);
+        $("#excelcontainer").hide();
+
+    })
+    
+    
+    
+    
+    //-----------------------------CODE FOR EXCEL UPLOAD AND DATA MANIPULATION---------------------------------------
+    //**************** START COMMENT OUT ALL FOR EXCEL *************************************
     let selectedFile;
 
     document.getElementById('fileUpload')
@@ -39,7 +57,7 @@ $(document).ready(function () {
         });   // end uploadExcel event
 
 
-    //  EACH OBJECT CONTAINS A STRING WITH THE CODE, ADDRESS, AND LASTNAME  -  NEED TO SEPARaTE AND TRIM THESE FIELDS
+    //  EACH OBJECT CONTAINS A STRING WITH THE CODE, ADDRESS, AND LASTNAME  -  NEED TO SEPARATE AND TRIM THESE FIELDS
 
     const parseJSON = (allcustomers) => {
 
@@ -60,34 +78,39 @@ $(document).ready(function () {
         let rebuiltArrayOfObjects = [];  // will hold the final product 
 
         customerSplitObjects.forEach((element) => {
-            singleRebuiltObject = { "lastname": element[0][0].trim(), "address": element[0][1].trim(), "code": element[0][2].trim(), "lat": element[1], "long": element[2] };
+            //removing code for garage
+            // singleRebuiltObject = { "lastname": element[0][0].trim(), "address": element[0][1].trim(), "code": element[0][2].trim(), "lat": element[1], "long": element[2] };
+            singleRebuiltObject = { "lastname": element[0][0].trim(), "address": element[0][1].trim(), "lat": element[1], "long": element[2] };
             rebuiltArrayOfObjects.push(singleRebuiltObject);
         });
+        
+       
 
-
-        // console.log(rebuiltArrayOfObjects);
+        console.log(rebuiltArrayOfObjects);
+        console.log("test");
 
         //*********************** LOAD DATA INTO 'January_Master' TABLE OF THE DB **********************************/
 
-        // rebuiltArrayOfObjects.forEach((element)=>{
-        //     let record = {
-        //         "lastname" : element.lastname,
-        //         "address"  : element.address,
-        //         "code" : element.code,
-        //         "lat" : element.lat,
-        //         "long" : element.long
-        //     }
-        //     $.ajax({
-        //         method: "POST",
-        //         url: "/api/newjanuary",
-        //         data: record
-        //     });
-        // })
+        rebuiltArrayOfObjects.forEach((element)=>{
+            let record = {
+                "lastname" : element.lastname,
+                "address"  : element.address,
+                //"garage" : element.code,  -- removing garage code
+                "lat" : element.lat,
+                "long" : element.long
+            }
+            $.ajax({
+                method: "POST",
+                url: "/api/newjanuary",
+                data: record
+            });
+        })
 
 
 
     }  // end of parseJSON
 
+     //**************** END COMMENT OUT ALL FOR EXCEL ************************************
 
     // --------------------------------CODE FOR DRAWING MAP------------------------------
 
@@ -142,13 +165,13 @@ $(document).ready(function () {
                     color: "grey"
                 })
                 mymap.addLayer(marker)
-                marker.bindPopup(popupDiv(staticArray[i].garage, staticArray[i].address, staticArray[i].lastname, staticArray[i].id, completed, mymap));
+                marker.bindPopup(popupDiv( staticArray[i].address, staticArray[i].lastname, staticArray[i].id, completed, mymap));
             } else {
                 marker = new L.circle([lat, long], {
                     color: "green"
                 })
                 mymap.addLayer(marker)
-                marker.bindPopup(popupDiv(staticArray[i].garage, staticArray[i].address, staticArray[i].lastname, staticArray[i].id, completed, mymap));
+                marker.bindPopup(popupDiv(staticArray[i].address, staticArray[i].lastname, staticArray[i].id, completed, mymap));
             }
         }
     } //end of drawMap
@@ -156,8 +179,8 @@ $(document).ready(function () {
 
 
     //RETRIEVE DATA FROM DB
-    const getDataFromDB = () => {
-        $.get("/api/all", function (data) {
+    const getDataFromDB = (path) => {
+        $.get(path, function (data) {
             staticArray = data;
             drawMap();
         })
@@ -167,10 +190,10 @@ $(document).ready(function () {
     //CUSTOM POPUP TO INCLUDE EACH INDIVIDUAL CUSTOMER RECORD FROM THE DB
     //const testDiv = document.querySelector("#testdiv");
 
-    const popupDiv = (garage, address, lastname, db_id, completed, mymap) => {
+    const popupDiv = (address, lastname, db_id, completed, mymap) => {
         const newDiv = document.createElement("div");
         // newDiv.setAttribute("id", id);
-        let garageEl = $("<p></p").text("garage: " + garage);
+        // let garageEl = $("<p></p").text("garage: " + garage);
         let addressEl = $("<p></p>").text("address: " + address);
         let lastnameEl = $("<p></p>").text("lastname: " + lastname);
         // let zoom = mymap.getZoom();
@@ -224,7 +247,7 @@ $(document).ready(function () {
             });
         } //end of else
 
-        $(newDiv).append(garageEl, addressEl, lastnameEl, completedButtonEl);
+        $(newDiv).append(addressEl, lastnameEl, completedButtonEl);
 
         return newDiv;
     }  // end of popupDiv

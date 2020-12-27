@@ -8,9 +8,9 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 
             },
-            garage: {
-                type: DataTypes.STRING
-            },
+            // garage: {
+            //     type: DataTypes.STRING
+            // },
             notes: {
                 type: DataTypes.STRING
             },

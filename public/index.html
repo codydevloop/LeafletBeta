@@ -33,36 +33,35 @@
 <body>
 
     <!-- EXCEL CONTAINTER -->
-    <div class="container" id="excelContainer">
+    <div class="container" id="excelcontainer">
         <div class="row">
-            <div class="column">
+            <div class="col-5">
 
                 <h3>Trilogy Address Mapper</h3>
-                <p>Choose a month:</p>
-                <div id="monthlyData"></div>
+                
                 <hr>
-                <p>or upload new address information ...</p>
+                <p>Choose a data set:</p>
+                <div id="monthlyData">
+                    <button type="button" class="btn btn-primary" id="master">Master 2020</button>
+                    <button type="button" class="btn btn-primary" id= "testdbdata">Test Data</button>
+                </div>
+                <hr>
+                <!-- **************** START COMMENT OUT ALL FOR EXCEL ************************************ -->
+                <p>or upload new Spreadsheet ...</p>
                 <hr>
 
                 <div class="mb-3">
                     <form>
-                        <label for="fileUpload" class="form-label">Before Upload, Reduce Spreadsheet to <strong>Customer
-                            </strong>Column only</label>
-                        <label for="fileUpload" class="form-label">Example Format: <strong>Long - 4977 S Harvest -
-                                1943</strong></label>
+                        <label for="fileUpload" class="form-label">Before Upload, Reduce Spreadsheet to 3 columns. <strong>'Customer'  'Lat'  'Long'
+                            </strong></label>
+                        <!-- <label for="fileUpload" class="form-label">Example Format: <strong>Long - 4977 S Harvest -
+                                1943</strong></label> -->
                         <input class="form-control" type="file" id="fileUpload" accept=".xls, .xlsx">
-                        <!-- <input type="text" class="form-control mt-3" placeholder="What month is this for?"
-                            id="nameofmonth" required="true"> -->
                         <button type="submit" class="btn btn-success mt-3" id="uploadExcel">Convert</button>
                     </form>
                 </div>
-
-
-                <!-- <input type="file" id="fileUpload" accept=".xls, .xlsx" /> -->
-
-                <!-- <button type="button" id="uploadExcel">Convert</button> -->
-                <pre id="jsonData"></pre>
-            </div>
+                <!-- **************** END COMMENT OUT ALL FOR EXCEL ************************************ -->
+            </div> 
         </div>
     </div>
 

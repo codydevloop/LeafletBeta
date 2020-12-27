@@ -20,7 +20,7 @@ router.post('/new', async (req, res) => {
       const data = await db.Customer.create({
         lastname: req.body.lastname,
         address: req.body.address,
-        garage: req.body.garage,
+        // garage: req.body.garage,
         notes: req.body.notes,
         lat: req.body.lat,
         long: req.body.long,
@@ -35,7 +35,7 @@ router.post('/newjanuary', async (req, res) => {
     const data = await db.January_Master.create({
       lastname: req.body.lastname,
       address: req.body.address,
-      garage: req.body.garage,
+    //   garage: req.body.garage,
       notes: req.body.notes,
       lat: req.body.lat,
       long: req.body.long,
