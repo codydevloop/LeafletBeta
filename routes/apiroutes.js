@@ -49,14 +49,14 @@ router.post('/newjanuary', async (req, res) => {
 // ------------- PUT --------------------------
 
 router.put('/completed/:id', async (req, res) => {
-
+    console.log(req.body.completed);
     const data = await db.Customer.update(
         {completed: req.body.completed},
         {where:
             {id: req.params.id}
         }
     )   
-    
+    console.log(data);
     res.send(data);
 });
 

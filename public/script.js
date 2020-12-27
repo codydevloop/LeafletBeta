@@ -1,13 +1,17 @@
 $(document).ready(function () {
     
+    let postPath = "";
     
     $("#master").click(function(){
+        postPath = "/api/completedjanuary/"
         $("#excelcontainer").hide();
         path = "/api/alljanuary";
         getDataFromDB(path);
+        
     })
 
     $("#testdbdata").click(function(){
+        postPath = "/api/completed/"
         path = "/api/all";
         getDataFromDB(path);
         $("#excelcontainer").hide();
@@ -205,7 +209,7 @@ $(document).ready(function () {
 
                 $.ajax({
                     method: "PUT",
-                    url: "/api/completed/" + db_id,
+                    url: postPath + db_id,
                     data: {
                         completed: 0
                     }
@@ -227,7 +231,7 @@ $(document).ready(function () {
 
                 $.ajax({
                     method: "PUT",
-                    url: "/api/completed/" + db_id,
+                    url: postPath + db_id,
                     data: {
                         completed: 1
                     }
