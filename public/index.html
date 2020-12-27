@@ -27,6 +27,8 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
         integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
         crossorigin=""></script>
+
+    <link rel="stylesheet" href="index.css">
 </head>
 
 
@@ -35,7 +37,7 @@
     <!-- EXCEL CONTAINTER -->
     <div class="container" id="excelcontainer">
         <div class="row">
-            <div class="col-5">
+            <div class="col-12">
 
                 <h3>Trilogy Address Mapper</h3>
                 
@@ -47,17 +49,17 @@
                 </div>
                 <hr>
                 <!-- **************** START COMMENT OUT ALL FOR EXCEL ************************************ -->
-                <p>or upload new Spreadsheet ...</p>
+                <p>or upload new Spreadsheet...*currently disabled</p>
                 <hr>
 
-                <div class="mb-3">
+                <div class="mb-3" >
                     <form>
-                        <label for="fileUpload" class="form-label">Before Upload, Reduce Spreadsheet to 3 columns. <strong>'Customer'  'Lat'  'Long'
-                            </strong></label>
+                        <!-- <label for="fileUpload" class="form-label">Before Upload, Reduce Spreadsheet to 3 columns. <strong>'Customer'  'Lat'  'Long'
+                            </strong></label> -->
                         <!-- <label for="fileUpload" class="form-label">Example Format: <strong>Long - 4977 S Harvest -
                                 1943</strong></label> -->
-                        <input class="form-control" type="file" id="fileUpload" accept=".xls, .xlsx">
-                        <button type="submit" class="btn btn-success mt-3" id="uploadExcel">Convert</button>
+                        <input disabled="true" class="form-control" type="file" id="fileUpload" accept=".xls, .xlsx">
+                        <button disabled="true" type="submit" class="btn btn-success mt-3" id="uploadExcel">Convert</button>
                     </form>
                 </div>
                 <!-- **************** END COMMENT OUT ALL FOR EXCEL ************************************ -->
@@ -67,7 +69,9 @@
 
 
     <!-- MAP CONTAINTER -->
-    <div id="mapid" style="width: 600px; height: 400px;"></div>
+    <!-- <div id="mapid" style="width: 600px; height: 400px;"></div> -->
+    <div id="mapid"></div>
+
 
     <!-- TEXT RENDERING popupDiv function> -->
     <!-- <div id="testdiv" style="width: 600px; height: 400px;" ></div> -->
