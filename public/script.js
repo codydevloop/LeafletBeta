@@ -51,6 +51,7 @@ $(document).ready(function () {
                         //display in body of webpage
                         // document.getElementById("jsonData").innerHTML = jsonObject;
                         // console.log(jsonObject);
+                        
 
                         //**CALL TO PARSE OUT DATA */
                         parseJSON(rowObject)
@@ -65,37 +66,50 @@ $(document).ready(function () {
 
     const parseJSON = (allcustomers) => {
 
-        //***SPLIT THE STRINGS BY THE HYPHEN "-"
-        let customerSplitObjects = [];
+        //pull 'name', 'address', 'lat', 'long' and build new array
+        let arrayForDB = [];
 
-        allcustomers.forEach((element) => {
+        allcustomers.forEach((element)=> {
+            let newObject = {"lastname": element.Name, "address": element.address, "lat": element.lat, "long": element.long};
+            arrayForDB.push(newObject);
+        })
 
-            //split each customer element
-            splitStringArray = element.Customer.split("-");
+       
 
-            //build new array with split items, add lat and long back in
-            customerSplitObjects.push([splitStringArray, element.Lat, element.Long]);
-        });
+        // #### ##############  OLD 2020 EXCEL PARSING START ###################
+        //#######################################################################
+        // //***SPLIT THE STRINGS BY THE HYPHEN "-"
+        // let customerSplitObjects = [];
 
-        //***REBUILD ARRAY OF OBJECTS, TRIM SPACES AND ASSIGN KEY/VALUE PAIRS */
+        // allcustomers.forEach((element) => {
 
-        let rebuiltArrayOfObjects = [];  // will hold the final product 
+        //     //split each customer element
+        //     splitStringArray = element.Customer.split("-");
 
-        customerSplitObjects.forEach((element) => {
-            //removing code for garage
-            // singleRebuiltObject = { "lastname": element[0][0].trim(), "address": element[0][1].trim(), "code": element[0][2].trim(), "lat": element[1], "long": element[2] };
-            singleRebuiltObject = { "lastname": element[0][0].trim(), "address": element[0][1].trim(), "lat": element[1], "long": element[2] };
-            rebuiltArrayOfObjects.push(singleRebuiltObject);
-        });
+        //     //build new array with split items, add lat and long back in
+        //     customerSplitObjects.push([splitStringArray, element.Lat, element.Long]);
+        // });
+
+        // //***REBUILD ARRAY OF OBJECTS, TRIM SPACES AND ASSIGN KEY/VALUE PAIRS */
+
+        // let rebuiltArrayOfObjects = [];  // will hold the final product 
+
+        // customerSplitObjects.forEach((element) => {
+        //     //removing code for garage
+        //     // singleRebuiltObject = { "lastname": element[0][0].trim(), "address": element[0][1].trim(), "code": element[0][2].trim(), "lat": element[1], "long": element[2] };
+        //     singleRebuiltObject = { "lastname": element[0][0].trim(), "address": element[0][1].trim(), "lat": element[1], "long": element[2] };
+        //     rebuiltArrayOfObjects.push(singleRebuiltObject);
+        // });
+        //###################################################################
+        // #### ##############  OLD 2020 EXCEL PARSING END ###################
         
        
 
-        console.log(rebuiltArrayOfObjects);
-        console.log("test");
+        
 
         //*********************** LOAD DATA INTO 'January_Master' TABLE OF THE DB **********************************/
 
-        rebuiltArrayOfObjects.forEach((element)=>{
+        arrayForDB.forEach((element)=>{
             let record = {
                 "lastname" : element.lastname,
                 "address"  : element.address,
@@ -156,13 +170,17 @@ $(document).ready(function () {
         // }).addTo(mymap)
 
         // console.log(staticArray);
+
+
         for (i = 0; i < staticArray.length; i++) {
 
 
             const lat = staticArray[i].lat;
             const long = staticArray[i].long;
+        
             const completed = staticArray[i].completed;
             const lastname = staticArray[i].lastname;
+            
 
             if (completed) {
                 marker = new L.circle([lat, long], {
@@ -170,6 +188,7 @@ $(document).ready(function () {
                 })
                 mymap.addLayer(marker)
                 marker.bindPopup(popupDiv( staticArray[i].address, staticArray[i].lastname, staticArray[i].id, completed, mymap));
+                
             } else {
                 marker = new L.circle([lat, long], {
                     color: "green"
@@ -177,7 +196,10 @@ $(document).ready(function () {
                 mymap.addLayer(marker)
                 marker.bindPopup(popupDiv(staticArray[i].address, staticArray[i].lastname, staticArray[i].id, completed, mymap));
             }
+            console.log(staticArray[i]);
         }
+
+
     } //end of drawMap
 
 
@@ -187,6 +209,7 @@ $(document).ready(function () {
         $.get(path, function (data) {
             staticArray = data;
             drawMap();
+            // console.log(staticArray);
         })
     };  // end fetch
 
